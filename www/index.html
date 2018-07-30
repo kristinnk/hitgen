@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<title>Hit location thingomajicky</title>
+	<script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<style type="text/css">
+	body {
+		background-color: #cccccc;
+	}
+</style>
+
+<body>
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 panel" style="margin-top: 50px;">
+		<div class="panel-heading">
+			Hit generator!
+		</div>
+		<div class="panel-body">
+			<form>
+				<div class="form-group col-xs-12">
+					<label for="tbNumberOfShots">Number of shots (ratatatat)</label>
+					<input type="text" id="tbNumberOfShots" class="form-control" value="10" />
+				</div>
+				<div class="form-group col-xs-12">
+					<label for="tbDamageDiceField">Damage (f.x. 1d4+2)</label>
+					<input type="text" id="tbDamageDiceField" class="form-control" value="1d4+1" />
+					<input type="button" id="btnFire" class="btn btn-danger col-xs-12" style="margin-top:5px;" value="Fire" onclick="fireGun()" />
+				</div>
+				<div id="divResultList" class="form-group col-xs-12 well">
+				</div>
+			</form>
+		</div>
+		<div class="panel-footer text-right">
+		<span style="font-size: 10px;">Rip and tear</span>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+	function createDiv(shotNumber, damage, location) {
+		parentDiv = $('#divResultList');
+		parentDiv.append("<div style='margin-bottom:5px'>" +
+						"<i>Shot #" + shotNumber + "<br></i>" + 
+						"Hit location : " + location + "<br>" +
+						"Damage : <b>" + damage + "</b><br>" +
+						"</div>");
+	}
+
+	function fireGun() {
+		$('#divResultList').empty();
+		regexpString = /[0-9]+/g;
+		regexpForSymbol = /[-+]+/g;
+		mathsymbol = "";
+		calcDamage = true;
+
+		fireString = $('#tbDamageDiceField')[0].value;
+		numericalArray = fireString.match(regexpString);
+
+		numberOfShots = parseInt($('#tbNumberOfShots')[0].value);
+		diceNum = parseInt(numericalArray[0]);
+
+		if (typeof numericalArray[1] !== 'undefined') {
+			calcDamage = false;	
+			damageDie = 0;
+			modifier = 0;
+			mathSymbol = "";
+		}
+		
+		damageDie = parseInt(numericalArray[1]);
+		modifier = 0;
+		if (typeof numericalArray[2] !== 'undefined') {
+			modifier = parseInt(numericalArray[2]);
+		}
+		mathSymbol = regexpForSymbol.exec(fireString)
+		
+		for(i = 0; i < numberOfShots; i++) {
+			randNum = Math.floor(Math.random() * 100) + 1;
+			damage = modifier;
+			if (calcDamage == false) {
+				for (j = 0; j < diceNum; j++) {
+					damage = damage + Math.floor(Math.random() * damageDie) + 1;
+				}
+			} else {
+				damage = numericalArray[0];
+			}
+			hitLoc = getHitloc(randNum);
+			createDiv(i, damage, hitLoc);
+		}
+	}
+
+	function getHitloc(value) {
+		retValue = "";
+		if (value >= 1 && value <= 5) {
+			retValue = "Skull";
+		} if (value >= 6 && value <= 10) {
+			retValue = "Face";
+		} if (value >= 11 && value <= 12) {
+			retValue = "Neck";
+		} if (value >= 13 && value <= 23) {
+			retValue = "Left arm";
+		} if (value >= 24 && value <= 26) {
+			retValue = "Left hand";
+		} if (value >= 27 && value <= 37) {
+			retValue = "Right arm";
+		} if (value >= 38 && value <= 40) {
+			retValue = "Right hand";
+		} if (value >= 41 && value <= 57) {
+			retValue = "Chest";
+		} if (value >= 58 && value <= 74) {
+			retValue = "Abdomen";
+		} if (value >= 75 && value <= 85) {
+			retValue = "Left leg";
+		} if (value >= 86 && value <= 87) {
+			retValue = "Left foot";
+		} if (value >= 88 && value <= 98) {
+			retValue = "Right leg";
+		} if (value >= 99 && value <= 100) {
+			retValue = "Right foot";
+		}
+		return retValue;
+	}
+
+</script>
+</html>
