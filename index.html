@@ -70,11 +70,18 @@
 
 	function createDiv(shotNumber, damage, location) {
 		parentDiv = $('#divResultList');
-		parentDiv.append("<div style='margin-bottom:5px'>" +
+		if (shotNumber != "TOTAL") {
+			parentDiv.append("<div style='margin-bottom:5px'>" +
 						"<i>Shot #" + shotNumber + "<br></i>" + 
 						"Hit location : " + location + "<br>" +
 						"Damage : <b>" + damage + "</b><br>" +
 						"</div>");
+		} else {
+			parentDiv.append("<div style='margin-bottom:5px; background-color:#eeaaaa'>" +
+						"<i>Total damage<br></i>" + 
+						"Damage : <b>" + damage + "</b><br>" +
+						"</div>");
+		}
 	}
 
 	function clearRedXs() {
@@ -119,7 +126,7 @@
 			modifier = parseInt(numericalArray[2]);
 		}
 		mathSymbol = regexpForSymbol.exec(fireString)
-		
+		var totalDamage = 0;
 		for(i = 0; i < numberOfShots; i++) {
 			randNum = Math.floor(Math.random() * 100) + 1;
 			if (mathSymbol == "+"){
@@ -135,10 +142,12 @@
 			} else {
 				damage = numericalArray[0];
 			}
+			totalDamage = totalDamage + damage;
 			hitLoc = getHitloc(randNum);
 			createDiv(i, damage, hitLoc);
 			drawRedX(hitLoc, i*10);
 		}
+		createDiv("TOTAL", totalDamage, "");
 	}
 
 	function getHitloc(value) {
